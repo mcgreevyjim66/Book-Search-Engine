@@ -4,6 +4,9 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
 
+import { useMutation } from '@apollo/client';
+import { ADD_USER } from '../utils/mutations';
+
 const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
@@ -11,6 +14,12 @@ const SignupForm = () => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+          // Set up the mutation with error handling support.
+  // The useMutation hook allows providing the refetchQueries option to refetch specific queries after a mutation
+  // This is useful to ensure that new data is displayed automatically. Otherwise, we would need to manually update the list at a higher component level, modify state, or implement custom caching behavior
+  const [addUser, { error }] = useMutation
+  (ADD_USER, { ...userFormData  });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -28,19 +37,20 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await createUser(userFormData);
+      //const response = await createUser(userFormData);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      const { data } = addUser({
+        variables: { ...userFormData }})
+
+        if (!data) {
+          throw new Error("something went wrong!");
+        }
+
+        Auth.login(data.addUser.token);
+      } catch (err) {
+        console.error(err);
+        setShowAlert(true);
       }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
-    }
 
     setUserFormData({
       username: '',

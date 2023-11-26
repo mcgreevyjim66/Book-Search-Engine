@@ -22,10 +22,6 @@ const server = new ApolloServer({
 
 const app = express();
 
-// if we're in production, serve client/build as static assets
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-}
 
 //********************************* */
 
@@ -35,7 +31,18 @@ const startApolloServer = async () => {
     
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
-    app.use(routes);
+      // Important for MERN Setup: When our application runs from production, it functions slightly differently than in development
+  // In development, we run two servers concurrently that work together
+  // In production, our Node server runs and delivers our client-side bundle from the dist/ folder 
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/dist')));
+    
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    });
+  }
+    
+    //app.use(routes);
   
     app.use('/graphql', expressMiddleware(server));
   
