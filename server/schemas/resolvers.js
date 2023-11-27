@@ -46,6 +46,9 @@ const resolvers = {
       { bookId, authors, description, title, image, link },
       context
     ) => {
+      console.log("resolvers.js savebook author:" + authors)
+      console.log("resolvers.js savebook context:" + JSON.stringify(context))
+      console.log("resolvers.js savebook context.user:" + context.user)
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },

@@ -40,7 +40,7 @@ const SignupForm = () => {
     try {
       //const response = await createUser(userFormData);
 
-      const { data } = addUser({
+      const { data } = await addUser({
         variables: { ...userFormData }})
 
         if (!data) {
