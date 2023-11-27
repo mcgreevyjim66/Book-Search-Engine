@@ -15,11 +15,12 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  
           // Set up the mutation with error handling support.
-  // The useMutation hook allows providing the refetchQueries option to refetch specific queries after a mutation
-  // This is useful to ensure that new data is displayed automatically. Otherwise, we would need to manually update the list at a higher component level, modify state, or implement custom caching behavior
-  const [addUser, { error }] = useMutation
-  (ADD_USER, { ...userFormData  });
+          // The useMutation hook allows providing the refetchQueries option to refetch specific queries after a mutation
+          // This is useful to ensure that new data is displayed automatically. Otherwise, we would need to manually update the list at a higher component level, modify state, or implement custom caching behavior
+          const [addUser, { error }] = useMutation(ADD_USER, { ...userFormData  });
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -43,7 +44,7 @@ const SignupForm = () => {
         variables: { ...userFormData }})
 
         if (!data) {
-          throw new Error("something went wrong!");
+          throw new Error("signupForm something went wrong! error:" + error );
         }
 
         Auth.login(data.addUser.token);
