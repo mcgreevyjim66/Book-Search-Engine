@@ -60,7 +60,7 @@ There is source code located in the Book-Search-Engine folder.
 
 ## Mock-up
 
-![The Book-Search-Engine screen shot.](../Book-Search-Engine/assets/book_search_engine.png)
+![The Book-Search-Engine screen shot.](book_search_engine-1.png)
 
 ## Credits
 
