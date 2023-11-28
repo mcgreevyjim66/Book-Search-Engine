@@ -51,7 +51,7 @@ THEN I am logged out of the site and presented with a menu with the options Sear
 ```
 ## Usage
 
-To run a demo of this application, please launch the demo located at https://splendorous-dasik-d62777.netlify.app/
+To run a demo of this application, please launch the demo located at https://thawing-taiga-54054-82d049ae84be.herokuapp.com/
 
 ## Source
 
