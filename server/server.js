@@ -1,61 +1,57 @@
+// Importing required modules
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
-const routes = require('./routes');
+//const routes = require('./routes'); // This line is commented out and seems unused in this setup
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001; // Defining the port for the server
 
-//***************************** */
-// Import the ApolloServer class and expressMiddleware helper function
+// Importing ApolloServer and middleware for Express integration
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const { authMiddleware } = require('./utils/auth');
-// Import the two parts of a GraphQL schema
+
+// Importing GraphQL schema definitions and resolvers
 const { typeDefs, resolvers } = require('./schemas');
 
+// Creating a new ApolloServer instance with type definitions and resolvers
 const server = new ApolloServer({
     typeDefs,
     resolvers
-  });
+});
 
-//********************************************* */
+const app = express(); // Creating an Express application
 
-const app = express();
-
-
-//********************************* */
-
-// Create a new instance of an Apollo server with the GraphQL schema
+// Function to start the Apollo and Express servers
 const startApolloServer = async () => {
-    await server.start();
-    
+    await server.start(); // Starting the Apollo server
+
+    // Express middleware for parsing request bodies
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
-      // Important for MERN Setup: When our application runs from production, it functions slightly differently than in development
-  // In development, we run two servers concurrently that work together
-  // In production, our Node server runs and delivers our client-side bundle from the dist/ folder 
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+
+    // Serving static files in production from the 'dist' directory
+    if (process.env.NODE_ENV === 'production') {
+      app.use(express.static(path.join(__dirname, '../client/dist')));
+
+      app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      });
+    }
     
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-    });
-  }
-    
-    //app.use(routes);
-  
- // app.use('/graphql', expressMiddleware(server));
+    // Applying the Apollo middleware with context for authentication
     app.use('/graphql', expressMiddleware(server, {
       context: authMiddleware
     }));
-  
+
+    // Connecting to the database and then starting the Express server
     db.once('open', () => {
       app.listen(PORT, () => {
         console.log(`API server running on port ${PORT}!`);
         console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
-      })
-    })
-  };
-  
-  // Call the async function to start the server
-  startApolloServer();
+      });
+    });
+};
+
+// Starting the server
+startApolloServer();
