@@ -79,7 +79,7 @@ const SearchBooks = () => {
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+    console.log("searchbooks.jsx token:" + JSON.stringify(token))
     if (!token) {
       return false;
     }
@@ -88,9 +88,9 @@ const SearchBooks = () => {
      // const response = await saveBook(bookToSave, token);
      const response = await saveBook({ variables: bookToSave, token });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      //if (!response.ok) {
+      //  throw new Error('something went wrong!');
+     // }
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);

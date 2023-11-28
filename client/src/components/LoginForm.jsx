@@ -19,8 +19,8 @@ const LoginForm = () => {
           // Set up the mutation with error handling support.
           // The useMutation hook allows providing the refetchQueries option to refetch specific queries after a mutation
           // This is useful to ensure that new data is displayed automatically. Otherwise, we would need to manually update the list at a higher component level, modify state, or implement custom caching behavior
-          const [loginUser, { error }] = useMutation(LOGIN_USER, { ...userFormData  });
-
+   const [loginUser, { error }] = useMutation(LOGIN_USER, { ...userFormData  });
+   //const [loginUser, { error }] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -40,7 +40,8 @@ const LoginForm = () => {
     try {
       const { data } = await loginUser({
         variables: { ...userFormData }})
-
+        console.log("loginform.jsx data: " + JSON.stringify(data))
+        console.log("loginform.jsx data.user: " + data.login.user.username)
         if (!data) {
           throw new Error("loginForm something went wrong! error:" + error );
         }
@@ -48,6 +49,7 @@ const LoginForm = () => {
       //const { token, user } = await data.json();
      // console.log(data.loginUser.user.username);
       Auth.login(data.login.token);
+      //Auth.login(data);
     } catch (err) {
       console.error(err);
       setShowAlert(true);

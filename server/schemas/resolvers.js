@@ -6,7 +6,9 @@ const resolvers = {
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
+        console.log("resolvers.js query me before findone")
         const results = User.findOne({ _id: context.user._id });
+        console.log("resolvers.js query me after findone results" + results)
         return results;
       }
       throw new AuthenticationError("You need to be logged in!");
@@ -25,7 +27,9 @@ const resolvers = {
       return { token, user };
     },
     login: async (parent, { email, password }) => {
+      console.log("resolvers.js logi enter")
       const user = await User.findOne({ email });
+      console.log("resolvers.js login user" + user)
 
       if (!user) {
         throw new AuthenticationError("No user found with this email address");
@@ -47,8 +51,8 @@ const resolvers = {
       context
     ) => {
       console.log("resolvers.js savebook author:" + authors)
-      console.log("resolvers.js savebook context:" + JSON.stringify(context))
-      console.log("resolvers.js savebook context.user:" + context.user)
+      //console.log("resolvers.js savebook context:" + JSON.stringify(context))
+      console.log("resolvers.js savebook context:" + context)
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: context.user._id },
